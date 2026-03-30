@@ -9,7 +9,7 @@ app.geometry('600x400')
 bases = ["Binário", "Octal", "Decimal", "Hexadecimal", "Outro"]
 
 titulo = ctk.CTkLabel(app, text='Digite o número a ser convertido e selecione sua base')
-titulo.pack(pady=(10,0))
+titulo.pack(pady=(10,0),anchor="w",padx=(50))
 
 frame = ctk.CTkFrame(app) ## 1 campo
 frame.pack(pady=(0,0))
@@ -18,7 +18,7 @@ numInicial = ctk.CTkEntry(frame, placeholder_text='Numero', width=200)
 numInicial.pack(side='left',pady=(5,5), padx='5px')
 
 frameInvisivel = ctk.CTkFrame(app, fg_color="transparent",height=28) ## 1 campo
-frameInvisivel.pack(pady=(0,15))
+frameInvisivel.pack(pady=(0),anchor="w",padx=(54))
 
 
 def outroInicialSelecionado(valor):
@@ -36,16 +36,16 @@ outroBaseInicial = ctk.CTkEntry(frameInvisivel, placeholder_text=" ")
 def outroPretendidaSelecionado(valor):
     if valor == "Outro":
         if not outroBasePretendida.winfo_ismapped():
-            outroBasePretendida.pack(after=basePretendida, pady=6)
+            outroBasePretendida.pack(after=basePretendida, pady=6,anchor="w",padx=(50))
             outroBasePretendida.focus()
     else:
         outroBasePretendida.pack_forget()
 
 mensagem = ctk.CTkLabel(app, text='Selecione a base desejada')
-mensagem.pack()
+mensagem.pack(anchor="w",padx=(50))
 
 basePretendida = ctk.CTkSegmentedButton(app, values=bases, command=outroPretendidaSelecionado)
-basePretendida.pack(pady=(0,5))
+basePretendida.pack(pady=(0),anchor="w",padx=(50))
 
 outroBasePretendida = ctk.CTkEntry(app, placeholder_text="Digite a Base Pretendida...")
 
@@ -80,11 +80,6 @@ def genericoBase() -> str:
         if not i.isdigit():
             i = (list(dict.values()).index(i.upper()) + 10)
         base10 += base1 ** n * int(i)
-    
-    if base10 < baseDesejada:
-        resultado.configure(text=f'Número não representável nessa base')
-        return
-
 
     resposta = str()
 
@@ -103,9 +98,9 @@ def genericoBase() -> str:
 
 
 botao = ctk.CTkButton(app,text='Converter',command=genericoBase)
-botao.pack(pady='10px')
+botao.pack(anchor="w",padx=(50),pady=(8))
 
 resultado = ctk.CTkLabel(app, text='')
-resultado.pack(pady='10px')
+resultado.pack()
 
 app.mainloop()
