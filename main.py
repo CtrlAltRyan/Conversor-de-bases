@@ -1,4 +1,5 @@
 import customtkinter as ctk
+import string
 
 ctk.set_appearance_mode('Dark')
 
@@ -50,13 +51,15 @@ basePretendida.pack(pady=(0),anchor="w",padx=(50))
 outroBasePretendida = ctk.CTkEntry(app, placeholder_text="Digite a Base Pretendida...")
 
 def genericoBase() -> str:
-    dict = { "10":"A", "11":"B", "12":"C", "13":"D", "14":"E", "15":"F", "16":"G", "17":"H", "18":"I", "19":"J",
-        "20":"K", "21":"L", "22":"M", "23":"N", "24":"O", "25":"P", "26":"Q","27":"R","28":"S","29":"T",
-        "30": "U", "31": "V", "32": "W", "33": "X", "34": "Y", "35": "Z"}
-
+    letras = list(string.ascii_uppercase)
+    nums = list(range(10, 36))
+    dict = {str(nums[k]): letras[k] for k in range(26)}
+    dict_invertido = {v: k for k, v in dict.items()}
     basesdict = {"Binário": 2,"Octal": 8, "Decimal": 10, "Hexadecimal": 16}
 
-    num1 = str(numInicial.get())
+    num1 = str(numInicial.get()).upper()
+    if not num1.isalnum():
+        resultado.configure(text='Digite um número válido')
     base10 = 0
 
     if baseInicial.get() == "Outro": 
@@ -64,22 +67,31 @@ def genericoBase() -> str:
         if base1 > 36 or base1 < 1:
             resultado.configure(text='Digite uma base válida')
             return
+    elif not baseInicial.get():
+        resultado.configure(text='Escolha a base inicial')
+        return
     else:
-        base1 = int(basesdict[baseInicial.get()])
+        base1 = int(basesdict[baseInicial.get().strip()])
 
     if basePretendida.get() == "Outro": 
         baseDesejada = int(outroBasePretendida.get())
         if baseDesejada > 36 or baseDesejada < 1:
             resultado.configure(text='Digite uma base válida')
             return
+    elif not basePretendida.get():
+        resultado.configure(text='Escolha a base desejada')
+        return
     else:
         baseDesejada = int(basesdict[basePretendida.get()])
 
 
-    for n, i in enumerate(num1[::-1]):  # para decimal
-        if not i.isdigit():
-            i = (list(dict.values()).index(i.upper()) + 10)
-        base10 += base1 ** n * int(i)
+    for i, n in enumerate(num1[::-1]):  # para decimal
+        n = int(n) if n.isdigit() else int(dict_invertido[n])
+        if n >= base1:
+            resultado.configure(text='Número inválido para a base escolhida')
+            return 
+        
+        base10 += base1 ** i * n
 
     resposta = str()
 
@@ -92,7 +104,7 @@ def genericoBase() -> str:
         else:
             resposta += str(base10 % baseDesejada)
 
-        base10 = int(base10 / baseDesejada)
+        base10 = base10 // baseDesejada
 
     resultado.configure(text=f'{resposta[::-1]}')
 
